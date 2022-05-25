@@ -68,6 +68,8 @@ namespace BeePluginIntegration.Controllers
     /// <returns>The request to send to Bee Authorizator Server</returns>
     private HttpWebRequest CreateWebRequestToBeeAuthorizatorServer(string endPoint)
     {
+      System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+      
       byte[] data = Encoding.UTF8.GetBytes(String.Format("grant_type=password&client_id={0}&client_secret={1}", clientId, clientSecret));
 
       // Create request
