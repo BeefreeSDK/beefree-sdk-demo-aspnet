@@ -1,8 +1,8 @@
-# BEE Plugin .NET code sample
+# Beefree SDK .NET code sample
 Use this sample to understand how a BEE Plugin integration works.
 
 1. Create an account at developers.beefree.io (a free one is available)
-2. On Controllers folder open BeeController.cs file and and change the placeholders YOUR_CLIENT_ID and YOUR_CLIENT_SECRET with your credentials
+2. On the Controllers folder, open the BeeController.cs file and change the placeholders YOUR_CLIENT_ID and YOUR_CLIENT_SECRET with your credentials
 3. Run it in your browser
 
 -------------------------
