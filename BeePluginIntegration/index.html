@@ -64,10 +64,10 @@
             onSave: function (jsonFile, htmlFile) {
                 onsole.log('onSave', htmlFile);
             },
-            onSaveAsTemplate: function (jsonFile) { 
+            onSaveAsTemplate: function (jsonFile) {
                 console.log('onSaveAsTemplate ', jsonFile);
             },
-            onAutoSave: function (jsonFile) { // + thumbnail? 
+            onAutoSave: function (jsonFile) { // + thumbnail?
                 console.log(new Date().toISOString() + ' autosaving...');
             },
             onSend: function (htmlFile) {
@@ -89,7 +89,7 @@
                 BeePlugin.create(JSON.parse(token), beeConfig, function (beePluginInstance) {
                     bee = beePluginInstance;
                     $.ajax({
-                        method: "GET",
+                        method: "POST",
                         url: 'https://rsrc.getbee.io/api/templates/m-bee'
                     }).done(function (template) {
                         console.log('load template done');
@@ -98,7 +98,7 @@
                     });
                 });
             });
-       });        
+       });
     </script>
 </body>
 </html>
