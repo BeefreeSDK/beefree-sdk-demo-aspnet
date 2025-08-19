@@ -1,12 +1,12 @@
 ﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Bee-Plugin Integration</title>
+    <title>Beefree SDK Integration</title>
 </head>
 <body>
 
     <div>
-        <h2>BeePlugin integration</h2>
+        <h2>Beefree SDK Integration</h2>
         <div id="bee-plugin-container" style="margin:20px;height:950px;width:95%"></div>
     </div>
 
@@ -54,7 +54,6 @@
             //showToolbar: true,
             //toolbar: ['Save', 'Save As Template', 'Send', 'Preview'],
 
-            uid: 'test1-dotnet',
             container: 'bee-plugin-container',
             autosave: 15,
             language: 'en-US',
@@ -88,14 +87,15 @@
                 var token = data;
                 BeePlugin.create(JSON.parse(token), beeConfig, function (beePluginInstance) {
                     bee = beePluginInstance;
-                    $.ajax({
-                        method: "POST",
-                        url: 'https://rsrc.getbee.io/api/templates/m-bee'
-                    }).done(function (template) {
-                        console.log('load template done');
-                        //console.log(template);
-                        bee.start(JSON.parse(template));
-                    });
+                    bee.start({});
+                    // $.ajax({
+                    //     method: "GET",
+                    //     url: 'https://rsrc.getbee.io/api/templates/m-bee'
+                    // }).done(function (template) {
+                    //     console.log('load template done');
+                    //     //console.log(template);
+                    //     bee.start(JSON.parse(template));
+                    // });
                 });
             });
        });

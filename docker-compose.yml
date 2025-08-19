@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  beefree-sdk-demo:
+    build: .
+    ports:
+      - "54067:54067"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
