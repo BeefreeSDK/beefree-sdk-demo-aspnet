@@ -26,6 +26,9 @@ namespace BeePluginIntegration.Controllers
     {
       try
       {
+        // Force TLS 1.2 usage for secure API calls
+        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+        
         var httpRequst = HttpContext.Current.Request;
 
         // TODO: configuration to get the Bee Authorizator Server  end-point
