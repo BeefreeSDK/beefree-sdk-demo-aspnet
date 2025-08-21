@@ -17,44 +17,59 @@ namespace BeePluginIntegration.Controllers
   {
     String clientId = "YOUR_CLIENT_ID";
     String clientSecret = "YOUR_CLIENT_SECRET";
+    String uid = "YOUR_UID";
 
     // POST api/<controller>
     [HttpPost]
     [Route("")]
     public HttpResponseMessage Post()
     {
-      var httpRequst = HttpContext.Current.Request;
-
-      // TODO: configuration to get the Bee Authorizator Server  end-point
-      String BeeEndPointAuthorizatorServer = ConfigurationManager.AppSettings["appAuth"];
-
-      // Create request to get the Authorization from Server Bee
-      HttpWebRequest request = CreateWebRequestToBeeAuthorizatorServer(BeeEndPointAuthorizatorServer);
-
-      using (var response = (HttpWebResponse)request.GetResponse())
+      try
       {
-        // If response is not 200... throw new App Exception
-        if (response.StatusCode != HttpStatusCode.OK)
-        {
-          string message = String.Format("POST failed. Received HTTP {0}", response.StatusCode);
-          throw new ApplicationException(message);
-        }
+        // Force TLS 1.2 usage for secure API calls
+        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+        
+        var httpRequst = HttpContext.Current.Request;
 
-        // grab the response  
-        using (var responseStream = response.GetResponseStream())
+        // TODO: configuration to get the Bee Authorizator Server  end-point
+        String BeeEndPointAuthorizatorServer = ConfigurationManager.AppSettings["appAuth"];
+
+        // Create request to get the Authorization from Server Bee
+        HttpWebRequest request = CreateWebRequestToBeeAuthorizatorServer(BeeEndPointAuthorizatorServer);
+
+        using (var response = (HttpWebResponse)request.GetResponse())
         {
-          using (var reader = new StreamReader(responseStream))
+          // If response is not 200... throw new App Exception
+          if (response.StatusCode != HttpStatusCode.OK)
           {
-            // read the response from AuthorizatorServer 
-            string respBeeAuthorizatorServer = reader.ReadToEnd();
+            string message = String.Format("POST failed. Received HTTP {0}", response.StatusCode);
+            throw new ApplicationException(message);
+          }
 
-            // Return the response
-            return new HttpResponseMessage()
+          // grab the response  
+          using (var responseStream = response.GetResponseStream())
+          {
+            using (var reader = new StreamReader(responseStream))
             {
-              Content = new StringContent(JObject.Parse(respBeeAuthorizatorServer).ToString())
-            };
+              // read the response from AuthorizatorServer 
+              string respBeeAuthorizatorServer = reader.ReadToEnd();
+
+              // Return the response
+              return new HttpResponseMessage()
+              {
+                Content = new StringContent(JObject.Parse(respBeeAuthorizatorServer).ToString())
+              };
+            }
           }
         }
+      }
+      catch (Exception ex)
+      {
+        // Return error details for debugging
+        return new HttpResponseMessage(HttpStatusCode.InternalServerError)
+        {
+          Content = new StringContent($"Error: {ex.Message}\nStack Trace: {ex.StackTrace}")
+        };
       }
     }
 
@@ -62,13 +77,23 @@ namespace BeePluginIntegration.Controllers
 
     #region Private method
     /// <summary>
-    ///     Method used to prepare requesto to Bee Authorizator Server
+    ///     Method used to prepare request to Bee Authorizator Server
     /// </summary>
     /// <param name="endPoint">The end-point to call</param>
     /// <returns>The request to send to Bee Authorizator Server</returns>
     private HttpWebRequest CreateWebRequestToBeeAuthorizatorServer(string endPoint)
     {
-      byte[] data = Encoding.UTF8.GetBytes(String.Format("grant_type=password&client_id={0}&client_secret={1}", clientId, clientSecret));
+      // Create JSON payload
+      var jsonPayload = new
+      {
+        grant_type = "password",
+        client_id = clientId,
+        client_secret = clientSecret,
+        uid = uid
+      };
+      
+      string jsonString = JObject.FromObject(jsonPayload).ToString();
+      byte[] data = Encoding.UTF8.GetBytes(jsonString);
 
       // Create request
       var request = (HttpWebRequest)WebRequest.Create(endPoint);
@@ -76,7 +101,8 @@ namespace BeePluginIntegration.Controllers
       // parametrization of request
       request.Method = "POST";
       request.ContentLength = data.Length;
-      request.ContentType = "application/x-www-form-urlencoded";
+      request.ContentType = "application/json";
+      request.Accept = "application/json";
 
       // put body for currrent request to POST
       using (Stream s = request.GetRequestStream())
