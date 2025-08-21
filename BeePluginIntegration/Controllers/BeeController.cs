@@ -15,9 +15,9 @@ namespace BeePluginIntegration.Controllers
   [RoutePrefix("api/auth")]
   public class BeeController : ApiController
   {
-    String clientId = "de459fdb-7d7b-4fcb-9d03-2131760633a5";
-    String clientSecret = "5MJIZsTqT8bbydXSqDrNKzQWaWTdWnxxZwwn7z3TisxoxLxDWo4R";
-    String uid = "test1-dotnet";
+    String clientId = "YOUR_CLIENT_ID";
+    String clientSecret = "YOUR_CLIENT_SECRET";
+    String uid = "YOUR_UID";
 
     // POST api/<controller>
     [HttpPost]
